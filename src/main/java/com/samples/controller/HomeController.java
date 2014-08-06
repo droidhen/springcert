@@ -15,5 +15,4 @@ public class HomeController {
 		ModelAndView mav = new ModelAndView("home");
 		return mav;
 	}
-
 }
