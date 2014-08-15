@@ -1,43 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://java.sun.com/xml/ns/javaee"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         id="WebApp_ID" version="2.5">
+	id="WebApp_ID" version="2.5">
 
-    <display-name>SpringCertificate</display-name>
+	<display-name>SpringCertificate</display-name>
 
-   <!--
-		- Location of the XML file that defines the root application context.
-		- Applied by ContextLoaderListener.
-	-->
+	<!-- - Location of the XML file that defines the root application context.
+		- Applied by ContextLoaderListener. -->
+	<!-- 在web.xml里给该Listener指定要加载的xml. 如果在web.xml里给该Listener指定要加载的xml,则会去加载相应的xml,而不会去加载/WEB-INF/下的applicationContext.xml。
+		但是，如果没有指定的话，默认会去/WEB-INF/下加载applicationContext.xml。 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+        	classpath:spring/applicationContext.xml
+			classpath:spring/applicationContext-security.xml
+        </param-value>
+	</context-param>
 
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring/application-config.xml</param-value>
-    </context-param>
+	<!-- Spring 提供ServletContextListener 的一个实现类ContextLoaderListener ，该类可以作为listener
+		使用，它会在创建时自动查找WEB-INF/ 下的applicationContext.xrnl 文件。因此，如果只有一个配置文件，并且文件名为applicationContext.xml
+		，则只需在web.xml文件中增加如下代码即可: -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
 
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
+	<!-- - Servlet that dispatches request to registered handlers (Controller
+		implementations). -->
+	<servlet>
+		<servlet-name>dispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/mvc-config.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 
 
-    <!--
-		- Servlet that dispatches request to registered handlers (Controller implementations).
-	-->
-    <servlet>
-        <servlet-name>dispatcherServlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>/WEB-INF/mvc-config.xml</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>dispatcherServlet</servlet-name>
-        <url-pattern>*.action</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>dispatcherServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
 
 </web-app>
